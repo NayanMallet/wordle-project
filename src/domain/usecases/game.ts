@@ -5,20 +5,22 @@ import { evaluateGuess } from "./evaluateGuess.ts";
 
 export class Game {
     private readonly dictionary: Dictionary;
+    private readonly maxAttempts: number;
     state: GameState;
     attempts: Attempt[];
     private secretWord?: Word;
 
-    constructor(dictionary: Dictionary) {
+    constructor(dictionary: Dictionary, maxAttempts: number = 6) {
         this.dictionary = dictionary;
+        this.maxAttempts = maxAttempts;
         this.state = "IN PROGRESS";
         this.attempts = [];
     }
 
-    async start(): Promise<void> {
+    async start(difficulty?: 'EASY' | 'NORMAL' | 'HARD'): Promise<void> {
         this.state = "IN PROGRESS";
         this.attempts = [];
-        this.secretWord = await this.dictionary.getRandomWord();
+        this.secretWord = await this.dictionary.getRandomWord(difficulty);
     }
 
     async play(guess: string): Promise<void> {
@@ -41,7 +43,7 @@ export class Game {
 
         if (attempt.evaluatedLetters.every(l => l.feedback === "CORRECT")) {
             this.state = "WON";
-        } else if (this.attempts.length >= 6) {
+        } else if (this.attempts.length >= this.maxAttempts) {
             this.state = "LOST";
         }
     }

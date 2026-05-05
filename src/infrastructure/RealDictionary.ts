@@ -5,14 +5,12 @@ export class RealDictionary implements Dictionary {
     // Cache words to avoid repeated fetches
     private cachedWords: string[] | null = null;
 
-    // Handles the network request
     private async fetchWords(): Promise<string[]> {
         if (this.cachedWords) {
             return this.cachedWords;
         }
 
         try {
-            // Fetch from local JSON or external API
             const response = await fetch('/words.json');
 
             if (!response.ok) {
@@ -37,10 +35,23 @@ export class RealDictionary implements Dictionary {
         return words.includes(word.toUpperCase());
     }
 
-    async getRandomWord(): Promise<Word> {
+    async getRandomWord(difficulty: 'EASY' | 'NORMAL' | 'HARD' = 'NORMAL'): Promise<Word> {
         const words = await this.fetchWords();
-        const randomIndex = Math.floor(Math.random() * words.length);
+        
+        let filteredWords = words;
+        
+        if (difficulty === 'EASY') {
+            // Mots simples : pas de lettres rares (Z, X, Y, K, W)
+            filteredWords = words.filter(w => !/[ZXYKW]/.test(w));
+        } else if (difficulty === 'HARD') {
+            // Mots complexes : au moins une lettre rare
+            filteredWords = words.filter(w => /[ZXYKW]/.test(w));
+        }
 
-        return words[randomIndex] as Word;
+        // Fallback si le filtre est trop restrictif
+        if (filteredWords.length === 0) filteredWords = words;
+
+        const randomIndex = Math.floor(Math.random() * filteredWords.length);
+        return filteredWords[randomIndex] as Word;
     }
 }
