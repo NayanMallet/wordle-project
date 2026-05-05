@@ -10,12 +10,24 @@
     "test": "vitest"
   },
   "dependencies": {
-    "vue": "^3.5.30"
+    "radix-vue": "^1.9.17",
+    "vue": "^3.5.30",
+    "vue-sonner": "^2.0.9"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/tsconfig": "^0.9.0",
+    "@vueuse/core": "^14.3.0",
+    "animate.css": "^4.1.1",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^1.0.0",
+    "postcss": "^8.4.49",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.9.3",
     "vite": "^8.0.1",
     "vitest": "^4.1.1",
