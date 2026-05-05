@@ -22,6 +22,40 @@ describe('evaluateGuess', () => {
         ]);
     });
 
+    it('Given a guess with exact match, When evaluated, Then all letters are CORRECT', () => {
+        // GIVEN: A secret word
+        const secret = "ARBRE";
+
+        // WHEN: The exact same word is guessed
+        const result = evaluateGuess(secret, "ARBRE");
+
+        // THEN: All letters return CORRECT
+        expect(result).toEqual([
+            { letter: "A", feedback: "CORRECT" },
+            { letter: "R", feedback: "CORRECT" },
+            { letter: "B", feedback: "CORRECT" },
+            { letter: "R", feedback: "CORRECT" },
+            { letter: "E", feedback: "CORRECT" },
+        ]);
+    });
+
+    it('Given a guess with mixed feedback, When evaluated, Then it returns CORRECT, MISPLACED and ABSENT correctly', () => {
+        // GIVEN: A secret word "PORTE"
+        const secret = "PORTE";
+
+        // WHEN: Guessing "POSTE" (P, O, T, E correct, S absent)
+        const result = evaluateGuess(secret, "POSTE");
+
+        // THEN: Feedback perfectly reflects the mix
+        expect(result).toEqual([
+            { letter: "P", feedback: "CORRECT" },
+            { letter: "O", feedback: "CORRECT" },
+            { letter: "S", feedback: "ABSENT" },
+            { letter: "T", feedback: "CORRECT" },
+            { letter: "E", feedback: "CORRECT" },
+        ]);
+    });
+
     it('Given a guess with duplicate letters, When evaluated, Then extra occurrences should be ABSENT', () => {
         // GIVEN: A secret word and a guess containing duplicate letters not present in the secret
         const secret = "LIVRE";
@@ -32,11 +66,29 @@ describe('evaluateGuess', () => {
 
         // THEN: The specific multiple letters rule is applied (extra 'R' is ABSENT)
         expect(result).toEqual([
-            { letter: "R", feedback: "MISPLACED" }, // The first R consumes the only R in LIVRE
+            { letter: "R", feedback: "MISPLACED" },
             { letter: "A", feedback: "ABSENT" },
             { letter: "M", feedback: "ABSENT" },
             { letter: "E", feedback: "MISPLACED" },
-            { letter: "R", feedback: "ABSENT" },    // The second R must be ABSENT
+            { letter: "R", feedback: "ABSENT" },
+        ]);
+    });
+
+    it('Given a guess with 3 identical letters but secret has only 1, When evaluated, Then only the first matches and others are ABSENT', () => {
+        // GIVEN: Secret has one 'R' and one 'E'
+        const secret = "ROUGE";
+        const guess = "ERREU"; // 2 'E's and 2 'R's
+
+        // WHEN: Evaluated
+        const result = evaluateGuess(secret, guess);
+
+        // THEN: Only one E and one R are marked as MISPLACED, the rest are ABSENT
+        expect(result).toEqual([
+            { letter: "E", feedback: "MISPLACED" },
+            { letter: "R", feedback: "MISPLACED" },
+            { letter: "R", feedback: "ABSENT" },
+            { letter: "E", feedback: "ABSENT" },
+            { letter: "U", feedback: "MISPLACED" },
         ]);
     });
 

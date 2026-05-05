@@ -69,6 +69,36 @@ describe('Game State Management', () => {
         await expect(game.play("CHOUX")).rejects.toThrow(GameOverError);
     });
 
+    it('Given an in-progress game, When playing a valid incorrect word, Then it saves the attempt and stays IN PROGRESS', async () => {
+        // GIVEN: A started game with secret "ARBRE"
+        const game = new Game(createFakeDictionary(true, "ARBRE"));
+        await game.start();
+
+        // WHEN: The player submits a valid word that is not the secret
+        await game.play("CHIEN");
+
+        // THEN: The attempt is saved and the game is still IN PROGRESS
+        expect(game.getState()).toBe("IN PROGRESS");
+        expect(game.getAttempts().length).toBe(1);
+        expect(game.getAttempts()[0].word).toBe("CHIEN");
+    });
+
+    it('Given a Hard mode game (4 max attempts), When failing 4 times, Then the game is LOST', async () => {
+        // GIVEN: A game initialized with maxAttempts = 4
+        const game = new Game(createFakeDictionary(true, "ARBRE"), 4);
+        await game.start();
+
+        // WHEN: The player fails 4 times
+        await game.play("CHIEN");
+        await game.play("CHIEN");
+        await game.play("CHIEN");
+        await game.play("CHIEN");
+
+        // THEN: The game state changes to "LOST" exactly after 4 attempts, not 6
+        expect(game.getState()).toBe("LOST");
+        expect(game.getAttempts().length).toBe(4);
+    });
+    
     it('Given an in-progress game, When failing 6 times, Then the game is LOST', async () => {
         // GIVEN: A started game with a specific secret word
         const game = new Game(createFakeDictionary(true, "ARBRE"));
