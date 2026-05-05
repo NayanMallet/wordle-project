@@ -1,4 +1,4 @@
-import type {GameState} from "./types.ts";
+import type { GameState } from "./types.ts";
 
 export class InvalidWordError extends Error {
     constructor(word: string) {
@@ -6,6 +6,7 @@ export class InvalidWordError extends Error {
         this.name = "InvalidWordError";
     }
 }
+
 export class GameOverError extends Error {
     constructor(gameState: GameState) {
         super(`The game is already ${gameState}.`);

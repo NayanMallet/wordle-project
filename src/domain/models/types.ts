@@ -11,7 +11,6 @@ export type EvaluatedLetter = {
 export type Attempt = {
     word: Word;
     evaluatedLetters: EvaluatedLetter[];
-}
+};
 
 export type GameState = "IN PROGRESS" | "WON" | "LOST";
-
